@@ -25,14 +25,8 @@ public class JdbcDriverLoader {
 
     public static void load(Path driverDirectory) throws SQLException, MalformedURLException {
 
-        // if not specified, we'll use drivers from system classpath
-        if (null == driverDirectory) {
-            log.info("No driver directory specified");
-            return;
-        }
-
         Iterator<String> driverNames = Arrays.asList(
-                "com.mysql.jdbc.Driver",
+                "com.mysql.cj.jdbc.Driver",
                 "org.postgresql.Driver",
                 "oracle.jdbc.driver.OracleDriver").iterator();
 
@@ -42,6 +36,13 @@ public class JdbcDriverLoader {
             } catch (ClassNotFoundException e) {
                 log.error("ERROR LOAD driver: " + e.getMessage());
             }
+        }
+        log.info("Loaded embedded drivers");
+
+        // if not specified, we'll use drivers from system classpath
+        if (null == driverDirectory) {
+            log.info("No driver directory specified");
+            return;
         }
 
         log.info("Looking for driver files in {}", driverDirectory);

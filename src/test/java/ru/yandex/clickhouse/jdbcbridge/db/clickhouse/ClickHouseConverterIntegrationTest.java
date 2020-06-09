@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import ru.yandex.clickhouse.jdbcbridge.db.jdbc.JdbcDriverLoader;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 import ru.yandex.clickhouse.util.ClickHouseRowBinaryStream;
 
@@ -20,15 +21,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -121,6 +114,7 @@ public class ClickHouseConverterIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
+        JdbcDriverLoader.load(null);
         conn = DriverManager.getConnection(uri);
         quote = conn.getMetaData().getIdentifierQuoteString();
 
