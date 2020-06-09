@@ -11,9 +11,7 @@ import java.nio.file.Path;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * This class performs registration of drivers from list of JAR's in external directory
@@ -33,9 +31,17 @@ public class JdbcDriverLoader {
             return;
         }
 
-        Enumeration<Driver> currentDrivers = DriverManager.getDrivers();
-        while (currentDrivers.hasMoreElements()) {
-            DriverManager.deregisterDriver(currentDrivers.nextElement());
+        Iterator<String> driverNames = Arrays.asList(
+                "com.mysql.jdbc.Driver",
+                "org.postgresql.Driver",
+                "oracle.jdbc.driver.OracleDriver").iterator();
+
+        while (driverNames.hasNext()) {
+            try {
+                Class.forName(driverNames.next());
+            } catch (ClassNotFoundException e) {
+                log.error("ERROR LOAD driver: " + e.getMessage());
+            }
         }
 
         log.info("Looking for driver files in {}", driverDirectory);
