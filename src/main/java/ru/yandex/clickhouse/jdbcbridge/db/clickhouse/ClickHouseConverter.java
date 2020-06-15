@@ -89,7 +89,6 @@ public class ClickHouseConverter {
         map.put(new TypeWithScaleAndPrecision(OTHER,null,null), new MappingInstruction<>(String, ResultSet::getObject, (i, s) -> s.writeString(i.toString())));
         map.put(new TypeWithScaleAndPrecision(ARRAY,null,null), new MappingInstruction<>(String, ResultSet::getArray, (i, s) -> s.writeString(i.toString())));
 
-
         for (int precision = 1 ; precision <= DECIMAL128MAXPRECISION ; precision++ ){
             for (int scale = 0 ; scale <= precision ; scale++ ){
                 int finalScale = scale;
@@ -119,6 +118,9 @@ public class ClickHouseConverter {
     private static MappingInstruction<?> getInstructionBySQLType(int sqlType, int precision, int scale) throws SQLException {
 
         MappingInstruction<?> instruction = MAP.get(new TypeWithScaleAndPrecision(sqlType,scale,precision));
+        if (null == instruction) {
+            return new MappingInstruction<>(String, ResultSet::getString, (i, s) -> s.writeString(i.toString()));
+        }
         if (null == instruction) {
             // try to infer name of constant
             String typeName = "unknown";
